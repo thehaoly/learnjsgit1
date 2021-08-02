@@ -1,1 +1,1 @@
-# learnjsgi1 is a folder for learn javascript biginner
+# learnjsgit1  is a folder for learn javascript anh how to use git with visual studio code for biginner
