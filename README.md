@@ -1,0 +1,1 @@
+# learnjsgi1 is a folder for learn javascript biginner
