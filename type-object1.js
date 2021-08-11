@@ -17,7 +17,7 @@
 // console.log(objectt[bar]);
 
 // Những phương thức khởi tạo đối tượng 
-// phương thức 1 : khởi tạo bằng từ khóa new và sau đó gắn thuôc tính cho nó 
+// phương thức 1 : khởi tạo bằng từ khóa new và sau đó gắn thuộc tính cho nó 
 // var myCar = new Object();
 // myCar.make = 'Ford';
 // myCar.model = 'Mustang';
@@ -49,7 +49,8 @@
 
 // Cách truy cập bằng dấu chấm động áp dụng trong trường hợp
 // Trong cú pháp object.property, thuộc tính phải là một mã định danh JavaScript hợp lệ. 
-//(Trong tiêu chuẩn ECMAScript, tên của các thuộc tính về mặt kỹ thuật là "Tên định danh -identifierName", không phải "Số nhận dạng - indentifier", vì vậy có thể sử dụng các từ dành riêng nhưng không được khuyến khích). Ví dụ, object.$1 là hợp lệ, trong khi object.1 thì không.
+//(Trong tiêu chuẩn ECMAScript, tên của các thuộc tính về mặt kỹ thuật là "Tên định danh -identifierName", 
+//không phải "Số nhận dạng - indentifier", vì vậy có thể sử dụng các từ dành riêng nhưng không được khuyến khích). Ví dụ, object.$1 là hợp lệ, trong khi object.1 thì không.
 // const object = {};
 // object.$1 = 'foo';
 // console.log(object.$1);  // 'foo'
