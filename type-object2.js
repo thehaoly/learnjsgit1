@@ -74,3 +74,101 @@
 //   console.log(target.foo);  // 1, exception is thrown here.
 //   console.log(target.foo3); // undefined, assign method has finished, foo3 will not be copied.
 //   console.log(target.baz);  // undefined, the third source will not be copied either.
+
+//@@@ Phương thức object.create() : dùng để tạo một đối tượng mới dựa trên mẫu của đối tượng đã tồn tại ( nguyên mẫu) 
+// cú pháp : 
+// Object.create(proto)
+// Object.create(proto, propertiesObject)
+// tham số propertiesObject tạo ra những thuộc tính của riêng đối tượng được tạo mà những thuộc tính này sẽ được liệt kê bằng phương thức Object.defineProperties()
+// những thuộc tính được liệt kê không bao gồm những thuộc tính của nguyên mẫu.
+// Chúng ta tìm hiểu về một sô đặc tính trong phương thức này
+ 
+//*** tính kế thừa cổ điển trong phương thứd
+// Shape - superclass
+// function Shape() {
+//     this.x = 0;
+//     this.y = 0;
+//   }
+//   // thiết lập phương thức của lớp ông nội
+//   Shape.prototype.move = function(x, y) {
+//     this.x += x;
+//     this.y += y;
+//     console.info('Shape moved.');
+//   };
+//   // Rectangle - là lớp con của lớp shape
+//   function Rectangle() {
+//     Shape.call(this); // gọi phương thức của lớp cha ( ông nội ).
+//   }
+//   // subclass extends superclass ( lớp con mở rộng lớp cha )
+//   Rectangle.prototype = Object.create(Shape.prototype);
+//   // Nếu chúng ta không đặt cấu trúc nguyên mẫu ( Rectangle.prototype.constructor ) cho Rectangle,
+//   //nó sẽ lấy cấu trúc nguyên mẫu ( prototype.constructor ) of Shape (parent) cha.
+//   //Để tránh điều đó, chúng ta nên đặt cấu trúc nguyên mẫu ( prototype.constructor ) cho Rectangle (child) con.
+//   Rectangle.prototype.constructor = Rectangle;
+//   var rect = new Rectangle(); // khởi tạo đối tượng cháu rect 
+//   console.log('Is rect an instance of Rectangle?', rect instanceof Rectangle); // true
+//   console.log('Is rect an instance of Shape?', rect instanceof Shape); // true
+//   rect.move(1, 1); // Outputs, 'Shape moved.'
+
+//*** sử dụng đối số thuộc tính của đối tượng 
+// var o;
+// // tạo một đối tượng với nguyên mẫu là null
+// o = Object.create(null);
+// o = {};
+// // chúng ta có thể tạo bằng phương pháp tương đương 
+// o = Object.create(Object.prototype);
+// // Chúng ta tạo một đối tượng với hai thuộc tính như sau 
+// // lưu ý tham số thứ hai ánh xạ các khóa tới bộ mô tả thuộc tính 
+// o = Object.create(Object.prototype, {
+//   // foo là một giá trị thuộc tính thông thường 
+//   foo: {
+//     writable: true,
+//     configurable: true,
+//     value: 'hello'
+//   },
+//   // bar là một getter-and-setter người truy cập (accessor) property
+//   bar: {
+//     configurable: false,
+//     get: function() { return 10; },
+//     set: function(value) {
+//       console.log('Setting `o.bar` to', value);
+//     }
+// /* trong es2015 người truy cập sẽ nhìn thấy như dạng dưới đây    
+//     get() { return 10; },
+//     set(value) {
+//     console.log('Setting `o.bar` to', value);
+//     } */
+//   }
+// });
+// function Constructor() {}
+// o = new Constructor();
+// // có thể dùng phương pháp tương đương 
+// o = Object.create(Constructor.prototype);
+// // Tất nhiên, nếu có mã khởi tạo thực tế trong hàm Constructor, Object.create () không thể phản ánh nó
+// // Tạo một đối tượng mới có nguyên mẫu là một đối tượng mới, đối tượng rổng và thêm một thuộc tính duy nhất 'p', với giá trị 42.
+// o = Object.create({}, { p: { value: 42 } });
+// // Theo mặt định thuộc tính không thể ghi, liệt kê, định cấu hỉnh 
+// o.p = 24;
+// console.log(o.p); // in 42 mà không phải 24 vì mặc định chúng ta không thể ghi giá trị mới vào thuộc tính ban đầu
+// o.q = 12;
+// console.log(o.q);
+// for (var prop in o) {
+//   console.log(prop);
+// } // kết quả liệt kê chỉ là 'q' mà không có thêm 'p' là vì mặc định trong khởi tạo không cho liệt kê thuộc tính p
+// delete o.p; // false sai là vì không cho ghi và cấu hình xóa thêm sữa
+// // để chỉ định thuộc tính es3
+// o2 = Object.create({}, {
+//   p: {
+//     value: 42,
+//     writable: true,
+//     enumerable: true,
+//     configurable: true
+//   }
+// });
+// for (var prop in o2) {
+//     console.log(prop);
+//   } // khi bậc các chế độ như ghi, liệt kê, cấu hình là true thì chúng ta mới có thể thao tác toàn quyển trên đối tượng  
+// // điều này tương đương đây sẽ tạo 1 đối tượng với nguyên mẫu: {p: 42 }, o2 = Object.create({p: 42})
+
+
+  
