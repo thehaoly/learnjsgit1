@@ -170,5 +170,81 @@
 //   } // khi bậc các chế độ như ghi, liệt kê, cấu hình là true thì chúng ta mới có thể thao tác toàn quyển trên đối tượng  
 // // điều này tương đương đây sẽ tạo 1 đối tượng với nguyên mẫu: {p: 42 }, o2 = Object.create({p: 42})
 
+//@@@ phương thức Object.defineProperty() : phương thức tĩnh dùng trong trường hợp định nghĩa một thuộc tính mới trực tiếp trên một đối tượng hoặc sửa đổi một thuộc tính hiện có trên một đối tượng và trả về đối tượng.
+// var o = {}; // Creates a new object
+// // Example of an object property added
+// // with defineProperty with a data property descriptor
+// Object.defineProperty(o, 'a', {
+//   value: 37,
+//   writable: true,
+//   enumerable: true,
+//   configurable: true
+// });
+// // 'a' property exists in the o object and its value is 37
+// // Example of an object property added
+// // with defineProperty with an accessor property descriptor
+// var bValue = 38;
+// Object.defineProperty(o, 'b', {
+//   // Using shorthand method names (ES2015 feature).
+//   // This is equivalent to:
+//   // get: function() { return bValue; },
+//   // set: function(newValue) { bValue = newValue; },
+//   get() { return bValue; },
+//   set(newValue) { bValue = newValue; },
+//   enumerable: true,
+//   configurable: true
+// });
+// o.b; // 38
+// // 'b' property exists in the o object and its value is 38
+// // The value of o.b is now always identical to bValue,
+// // unless o.b is redefined
 
-  
+// // You cannot try to mix both:
+// Object.defineProperty(o, 'conflict', {
+//   value: 0x9f91102,
+//   get() { return 0xdeadbeef; }
+// });
+// // throws a TypeError: value appears
+// // only in data descriptors,
+// // get appears only in accessor descriptors
+
+// trong quá trỉnh tạo chúng ta cần lưu ý một số thuộc tính sau
+
+//*** thuộc tính ghi đè ( Writable ) giá trị mặc định là false còn muốn mở thì ta đặc giá trị là true
+// đây là thuộc tính bậc tắc chế độ cho phép true hay không cho phép false bạn thay đổi giá trị của thuộc tính 
+
+//*** thuộc tính liệt kê ( enumerable ) giá trị mặc định là false còn muốn mở thì ta đặt giá trị là true
+// đây là thuộc tính bậc tắc chế độ cho phép true hay không cho phép false bạn liệt kê thuộc tính trong đối tượng đó
+
+//*** thuộc tính cấu hình ( configurable ) giá trị mặc định là false còn muốn mở thì ta đặt giá trị là true
+// đây là thuộc tính bậc tắc chế độ cho phép true hay không cho phép false xóa hay thay đổi giá trị thuộc tính 
+// var o = {};
+// Object.defineProperty(o, 'a', {
+//   get() { return 1; },
+//   configurable: false
+// });
+// // Object.defineProperty(o, 'a', {
+// //   configurable: true
+// // }); // xuất 1 lỗi do không được định nghĩa lại
+// // Object.defineProperty(o, 'a', {
+// //   enumerable: true
+// // }); // xuất 1 lỗi do không được cấu hình lại
+// // Object.defineProperty(o, 'a', {
+// //   set() {}
+// // }); // throws a TypeError (set was undefined previously)
+// // Object.defineProperty(o, 'a', {
+// //   get() { return 1; }
+// // }); // throws a TypeError
+// // // (even though the new get does exactly the same thing)
+// // Object.defineProperty(o, 'a', {
+// //   value: 12
+// // }); // một lổi xuất hiện khi không thể gán giá trị khi thuộc tính configurable là false ( mà không phải do phương thức get ảnh hưởng )
+// console.log(o.a); // xuất ra giá trị là 1
+// delete o.a; // không có gì diễn ra vì không thể xóa
+// console.log(o.a); // xuất ra giá trị là 1
+
+// //*** khi ta gắn giá trị cho thuộc tính của đối tượng theo phương thức sau :
+// var o = {} ;
+// o.a = 1 ;
+// // điều này có nghĩa là các thuộc tính như writable, enumerale, configurale đều là true . 
+
