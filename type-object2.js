@@ -248,3 +248,5 @@
 // o.a = 1 ;
 // // điều này có nghĩa là các thuộc tính như writable, enumerale, configurale đều là true . 
 
+//@@@ phương thức Object.entries() : Phương thức Object.entries () trả về một mảng gồm các cặp thuộc tính chuỗi khóa [khóa, giá trị] có thể liệt kê của riêng một đối tượng nhất định
+//Điều này cũng giống như lặp với vòng lặp for ... in, ngoại trừ việc vòng lặp for ... in cũng liệt kê các thuộc tính trong chuỗi nguyên mẫu
