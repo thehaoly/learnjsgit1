@@ -248,5 +248,61 @@
 // o.a = 1 ;
 // // điều này có nghĩa là các thuộc tính như writable, enumerale, configurale đều là true . 
 
+<<<<<<< HEAD
 //@@@ phương thức Object.entries() : Phương thức Object.entries () trả về một mảng gồm các cặp thuộc tính chuỗi khóa [khóa, giá trị] có thể liệt kê của riêng một đối tượng nhất định
 //Điều này cũng giống như lặp với vòng lặp for ... in, ngoại trừ việc vòng lặp for ... in cũng liệt kê các thuộc tính trong chuỗi nguyên mẫu
+=======
+//@@@ phương thức Object.retries() : phương thức trả về một mảng của đối tượng cụ thể có thể liệt kê được 
+// mảng trả về chưa sắp xếp, nếu chúng ta muốn nó thể hiện như ý cá nhân thì nên sử dụng kết hợp với phương thức sort như biểu thức sau :
+// Object.entries(obj).sort((a, b) => b[0].localeCompare(a[0]));
+// ví dụ :
+// const object1 = {
+//     a : 'somestring',
+//     b : 42 
+// };
+// for(const [key, value] of Object.entries(object1)){
+//     console.log( key + " : " + value );
+// }
+// hay :
+// const obj1 = { foo: 'bar', baz: 42 };
+// console.log(Object.entries(obj1)); // [ ['foo', 'bar'], ['baz', 42] ]
+
+//*** mảng giống đối tượng với khóa được sắp xếp theo thứ tự 
+// const obj2 = { 0: 'a', 1: 'b', 2: 'c' };
+// console.log(Object.entries(obj2)); // [ ['0', 'a'], ['1', 'b'], ['2', 'c'] ]
+
+//*** mảng giống đối tượng với khóa key ngẫu nhiên đặt trước 
+// const anObj = { 100: 'a', 2: 'b', 7: 'c' };
+// console.log(Object.entries(anObj)); // [ ['2', 'b'], ['7', 'c'], ['100', 'a'] ]
+
+//*** getFoo là thuộc tính mà nó không thể liệt kê 
+// const myObj = Object.create({}, { getFoo: { value() { return this.foo; } } });
+// myObj.foo = 'bar';
+// console.log(Object.entries(myObj)); // [ ['foo', 'bar'] ]
+
+//*** nếu đối số không phải là đối tượng thì nó sẽ bị ép kiểu cho nó thành đối tượng 
+// console.log(Object.entries('foo')); // [ ['0', 'f'], ['1', 'o'], ['2', 'o'] ]
+
+//*** phương thức sẽ trả về mãng rổng khi ta truyển vào kiểu nguyên thủy primitive ngoại trừ kiểu chuổi như ví dụ trên 
+// // vì nguyên thủy không có thuộc tính riêng
+// console.log(Object.entries(100)); // [ ]
+
+//*** lặp suốt cặp khóa và giá trị khi kết hợp vòng lặp for ... of
+// const obj = { a: 5, b: 7, c: 9 };
+// for (const [key, value] of Object.entries(obj)) {
+//   console.log( key + ' '+value ); // "a 5", "b 7", "c 9"
+// }
+
+//*** ứng dụng phương thức trong tính năng lặp cho đối tượng như lặp duyệt trên mảng 
+// Object.entries(obj).forEach(([key, value]) => {
+//   console.log( key + ' ' +value ); // "a 5", "b 7", "c 9"
+// });
+
+//*** áp dụng phương thức cho quá trình chuyển đối kiểu đối tượng object sang kiểu ánh xạ map
+// ví dụ :
+// const obj = { foo: 'bar', baz: 42 };
+// const map = new Map(Object.entries(obj));
+// console.log(map); // Map(2) {"foo" => "bar", "baz" => 42}
+
+
+>>>>>>> 9d2960d0665ae1b0b701871c37da5516236da000
