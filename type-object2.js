@@ -301,3 +301,97 @@
 // const map = new Map(Object.entries(obj));
 // console.log(map); // Map(2) {"foo" => "bar", "baz" => 42}
 
+//@@@ phương thức Object.prototype.hasOwnProperty() : cho biết liệu đối tượng có thuộc tính được chỉ định làm thuộc tính của chính nó hay không (trái ngược với việc kế thừa nó).
+// giá trị trả về là kiểu boolean, Trả về true nếu đối tượng có thuộc tính được chỉ định là thuộc tính riêng, false khác.
+// đối với đối tượng được tạo ra có giá trị khởi tạo là Object.create(null) thì sẽ báo lổi  
+
+//*** dùng phương thức để để kiểm tra sự tồn tại của một thuộc tính
+// const object1 = {};
+// object1.property1 = 42;
+// console.log(object1.hasOwnProperty('property1'));// expected output: true
+// console.log(object1.hasOwnProperty('toString'));// expected output: false
+// console.log(object1.hasOwnProperty('hasOwnProperty'));// expected output: false
+
+//*** dùng phương thức để kiểm tra thuộc tính nào là trực tiếp thuộc tính nào là kế thừa trong xuyên suốt chuỗi nguyên mẫu
+// let example = {};
+// example.prop = 'exists';
+// // `hasOwnProperty` will only return true for direct properties:
+// console.log(example.hasOwnProperty('prop'));             // returns true
+// console.log(example.hasOwnProperty('toString'));         // returns false
+// console.log(example.hasOwnProperty('hasOwnProperty'));   // returns false
+// // The `in` operator will return true for direct or inherited properties:
+// console.log('prop' in example);                          // returns true
+// console.log('toString' in example);                      // returns true
+// console.log('hasOwnProperty' in example);                // returns true
+
+//*** dùng phương thức để Lặp lại các thuộc tính có thể liệt kê của một đối tượng mà không thực thi trên các thuộc tính kế thừa
+// let buz = {
+//     fog: 'stack'
+//   };
+//   console.log(buz.fog);
+//   for (let name in buz) {
+//     if (buz.hasOwnProperty(name)) {
+//       console.log('this is fog (' +
+//         name + ') for sure. Value: ' + buz[name]);
+//     }
+//     else {
+//       console.log(name); // toString or something else
+//     }
+//   }
+
+//@@@ phương thức Object.is() : phương pháp xác định xem hai giá trị có phải là cùng một giá trị hay không.
+// cách sử dụng phương thức như sau :
+// Case 1: kết quả đánh giá giống như sử dụng ===
+// console.log(Object.is(25, 25));                // true
+// console.log(Object.is('foo', 'foo'));          // true
+// console.log(Object.is('foo', 'bar'));          // false
+// console.log(Object.is(null, null));            // true
+// console.log(Object.is(undefined, undefined));  // true
+// console.log(Object.is(window, window));        // true ( chạy như vậy báo lổi window is not defined )
+// console.log(Object.is([], []));                // false
+// var foo = { a: 1 };
+// var bar = { a: 1 };
+// console.log(Object.is(foo, foo));              // true
+// console.log(Object.is(foo, bar));              // false
+
+// // Case 2: Ký số không 
+// console.log(Object.is(0, -0));                 // false
+// console.log(Object.is(+0, -0));                // false
+// console.log(Object.is(-0, -0));                // true
+// console.log(Object.is(0n, -0n));               // true
+
+// // Case 3: NaN không phải là kiểu số 
+// console.log(Object.is(NaN, 0/0));              // true
+// console.log(Object.is(NaN, Number.NaN));        // true
+
+//@@@ phương thức Object.keys() : phương thức trả về một mảng các tên thuộc tính có thể liệt kê của một đối tượng nhất định, được lặp lại theo thứ tự giống như một vòng lặp thông thường.
+// const object1 = {
+//     a: 'somestring',
+//     b: 42,
+//     c: false
+//   };
+// console.log(Object.keys(object1)); // expected output: Array ["a", "b", "c"]
+
+// //*** ứng dụng cho tham số là mảng đơn giản ( simple array )
+// const arr = ['a', 'b', 'c'];
+// console.log(Object.keys(arr)); // console: ['0', '1', '2']
+
+// //*** ứng dụng cho tham số là mảng giống đối tượng ( array-like object )
+// const obj = { 0: 'a', 1: 'b', 2: 'c' };
+// console.log(Object.keys(obj)); // console: ['0', '1', '2']
+
+// //*** ứng dụng cho tham số là mảng giống đối tượng với thứ tự khóa ngẩu nhiên không được sắp xếp ( array-like object with random key ordering )
+// const anObj = { 100: 'a', 2: 'b', 7: 'c' };
+// console.log(Object.keys(anObj)); // console: ['2', '7', '100']
+
+// //*** ứng dụng cho phương thức của đối tượng không thể liệt kê getFoo ( getFoo is a property which isn't enumerable )
+// const myObj = Object.create({}, {
+//   getFoo: {
+//     value: function () { return this.foo; }
+//   }
+// });
+// myObj.foo = 1;
+// console.log(Object.keys(myObj)); // console: ['foo']
+
+//*** ( In ES2015+ ) từ năm 2015 trở đi javascript sẽ hỗ trợ ép kiểu đối với những kiểu nguyên mẫu thành đối tượng ngoại trừ null và undefined 
+// console.log(Object.keys('foo'));  // ["0", "1", "2"]
