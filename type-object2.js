@@ -395,3 +395,89 @@
 
 //*** ( In ES2015+ ) từ năm 2015 trở đi javascript sẽ hỗ trợ ép kiểu đối với những kiểu nguyên mẫu thành đối tượng ngoại trừ null và undefined 
 // console.log(Object.keys('foo'));  // ["0", "1", "2"]
+
+//@@@ phương thức Object.toString() : trả về một chuỗi đại diện cho đối tượng.
+// Theo mặc định, phương thức toString () được kế thừa bởi mọi đối tượng có nguồn gốc từ Object
+// Nếu phương thức này không bị ghi đè trong một đối tượng tùy chỉnh, toString () trả về "[kiểu đối tượng]", trong đó kiểu là kiểu đối tượng.
+// const o = new Object();
+// console.log(o.toString()); // returns [object Object]
+
+//*** Ứng dụng phương thức trong việc chuyển đổi số với tham số truyền vào chính là cơ số nhỏ nhất là 2 và lớn nhất là 36
+// ví dụ :
+// let baseTenInt = 10;
+// console.log(baseTenInt.toString(2)); // xuất ra số nhị phân dạng chuỗi ( Expected output is "1010" )
+
+//*** ứng dụng trong kiểu dữ liệu BigInt
+// let bigNum = BigInt(20);
+// console.log(bigNum.toString(2)); // xuất ra chuỗi nhị phân dạng chuỗi ( Expected output is "10100" )
+
+//*** Chúng ta có thể ghi đè lên phương thức toString nguyên mẫu theo ví dụ sau :
+// function Dog(name, breed, color, sex) {
+//     this.name = name;
+//     this.breed = breed;
+//     this.color = color;
+//     this.sex = sex;
+//   }
+// theDog = new Dog('Gabby', 'Lab', 'chocolate', 'female');
+// // Nếu bạn gọi phương thức toString () trên đối tượng tùy chỉnh này, nó sẽ trả về giá trị mặc định được kế thừa từ Đối tượng
+// console.log(theDog.toString()); // returns [object Object]
+// // Đoạn mã sau tạo và gán dogToString () để ghi đè phương thức toString () mặc định. 
+// // Hàm này tạo ra một chuỗi chứa tên, giống, màu sắc và giới tính của đối tượng, ở dạng "property = value;".
+// Dog.prototype.toString = function dogToString() {
+//     const ret = 'Dog ' + this.name + ' is a ' + this.sex + ' ' + this.color + ' ' + this.breed;
+//     return ret;
+//   }
+// console.log(theDog.toString());
+
+//*** Sử dụng toString () để phát hiện lớp đối tượng
+// Để sử dụng Object.prototype.toString () với mọi đối tượng, bạn cần gọi Function.prototype.call () hoặc Function.prototype.apply () trên nó, chuyển đối tượng bạn muốn kiểm tra làm tham số đầu tiên (được gọi là thisArg ).
+// const toString = Object.prototype.toString;
+// console.log(toString.call(new Date));    // [object Date]
+// console.log(toString.call(new String));  // [object String]
+// console.log(toString.call(Math));        // [object Math]
+// // Since JavaScript 1.8.5
+// console.log(toString.call(undefined));   // [object Undefined]
+// console.log(toString.call(null));        // [object Null]
+// tuy nhiên Sử dụng toString () theo cách này là không đáng tin cậy; các đối tượng có thể thay đổi hành vi của Object.prototype.toString () bằng cách xác định thuộc tính Symbol.toStringTag, dẫn đến kết quả không mong muốn
+// const myDate = new Date();
+// console.log(Object.prototype.toString.call(myDate));     // [object Date]
+// myDate[Symbol.toStringTag] = 'myDate';
+// console.log(Object.prototype.toString.call(myDate));     // [object myDate]
+// Date.prototype[Symbol.toStringTag] = 'prototype polluted';
+// console.log(Object.prototype.toString.call(new Date())); // [object prototype polluted]
+
+//@@@ phương thức Object.prototype.valueOf() : phương thức trả về giá trị nguyên thủy của đối tượng được chỉ định.
+
+//*** JavaScript gọi phương thức valueOf để chuyển đổi một đối tượng thành giá trị nguyên thủy
+// phương thức valueOf được kế thừa bởi mọi đối tượng có nguồn gốc từ Object
+// Mọi đối tượng cốt lõi được tích hợp sẵn sẽ ghi đè phương thức này để trả về một giá trị thích hợp
+// Nếu một đối tượng không có giá trị nguyên thủy, valueOf trả về chính đối tượng đó.
+
+//*** Ghi đè valueOf cho các đối tượng tùy chỉnh
+// Bạn có thể tạo một hàm để được gọi thay cho phương thức valueOf mặc định. Hàm của bạn không được có đối số
+
+// function MyNumberType(n) {
+//     this.number = n;
+//   }
+// MyNumberType.prototype.valueOf = function() {
+//     return this.number;
+//   };
+// const object1 = new MyNumberType(4);
+// console.log(object1 + 3); // expected output: 7
+
+//*** sử dụng phương thức cộng một ngôi 
+// console.log(+"5"); // 5 (string to number)
+// console.log(+""); // 0 (string to number)
+// console.log(+"1 + 2") // NaN (doesn't evaluate)
+// console.log(+new Date()) // same as (new Date()).getTime()
+// console.log(+"foo"); // NaN (string to number)
+// console.log(+{}); // NaN
+// console.log(+[]); // 0 (toString() returns an empty string list)
+// console.log(+[1]); // 1
+// console.log(+[1,2]); // NaN
+// console.log(+new Set([1])); // NaN
+// //console.log(+BigInt(1)); // Uncaught TypeError: Cannot convert a BigInt value to a number
+// console.log(+undefined); // NaN
+// console.log(+null); // 0
+// console.log(+true); // 1
+// console.log(+false); // 0
