@@ -114,22 +114,22 @@
 //   console.log(scratchy.age); // trả kết quả 4
 
 //@@@ kế thừa nhiều cấp độ
-  function Animal(name) {
-    this.name = name;
-  }
-  Animal.prototype.age=1;
-  function Cat(name, color) {
-    Animal.call(this, name);
-    this.color = color;
-  }
-  Cat.prototype = new Animal(null);
-  var catC = new Cat("Fluffy", "White");
-  console.log(catC.name);
-  console.log(catC.color);
-  console.log(catC.age);
-  console.log(catC.hasOwnProperty("name"));
-  console.log(catC.hasOwnProperty("color"));
-  console.log(catC.hasOwnProperty("age"));
+  // function Animal(name) {
+  //   this.name = name;
+  // }
+  // Animal.prototype.age=1;
+  // function Cat(name, color) {
+  //   Animal.call(this, name);
+  //   this.color = color;
+  // }
+  // Cat.prototype = new Animal(null);
+  // var catC = new Cat("Fluffy", "White");
+  // console.log(catC.name);
+  // console.log(catC.color);
+  // console.log(catC.age);
+  // console.log(catC.hasOwnProperty("name"));
+  // console.log(catC.hasOwnProperty("color"));
+  // console.log(catC.hasOwnProperty("age"));
   // Lưu ý rằng tuổi là tài sản duy nhất không phải là tài sản trực tiếp của catC
   
   //@@@ kế thừ hàm
