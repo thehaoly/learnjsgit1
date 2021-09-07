@@ -188,3 +188,71 @@ Tổng kết:
 - Và sử dụng phương thức catch () để lên lịch gọi lại được gọi khi lời hứa bị từ chối rejected.
 - Đặt mã mà bạn muốn thực thi trong phương thức cuối cùng finally() cho dù lời hứa được thực hiện hay bị từ chối.
 */
+
+//@@@ Chuổi Promises trong javascript
+// trong hướng dẫn này, bạn sẽ tìm hiểu về mô hình chuỗi Promises của JavaScript mà ở đó chuỗi Promises thực thi các hoạt động không đồng bộ theo trình tự.
+
+//*** Giới thiệu về chuỗi promises tron g javascript
+/* 
+Phương thức thể hiện của đối tượng Promise như then (), catch () hoặc last () trả về một đối tượng promises riêng biệt
+Do đó, bạn có thể gọi phương thức phiên bản của Promise trên Promise trả về
+Các phương thức gọi liên tiếp theo cách này được gọi là chuỗi lời hứa ( promises chaining ).
+Hãy xem xét ví dụ sau:
+*/
+// Đầu tiên, hãy tạo một promises mới sẽ chuyển thành giá trị 10 sau 3 giây:
+// let p = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         resolve(10);
+//     }, 3 * 100);
+// });
+// Lưu ý rằng chúng tôi sử dụng phương thức setTimeout () để mô phỏng một hoạt động không đồng bộ.
+// Sau đó, gọi phương thức then () trên promises:
+// p.then((result) => {
+//     console.log(result);
+//     return result * 2;
+// });
+/*
+Lệnh gọi lại callback ( hay hàm gọi lại ) được truyền cho phương thức then () thực thi sau khi Promises được giải quyết ( thực thi resolved )
+Trong lệnh gọi lại callback, chúng tôi đã hiển thị kết quả của lời hứa và trả về một giá trị mới: result * 2
+Vì phương thức then () trả về một Promise mới có giá trị được phân giải ( resolved )thành giá trị trả về, nên bạn có thể gọi phương thức then () trên phương thức trả về Promise, như sau:
+*/
+// let p = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         resolve(10);
+//     }, 3 * 100);
+// });
+// p.then((result) => {
+//     console.log(result);
+//     return result * 2;
+// }).then((result) => {
+//     console.log(result);
+//     return result * 3;
+// }).then((result) => {
+//     console.log(result);
+// });
+// Trong ví dụ này, giá trị trả về trong phương thức then () đầu tiên được chuyển cho phương thức then () thứ hai, rồi đến phương thức then () thứ ba. Bạn có thể tiếp tục gọi phương thức then () liên tiếp như thế cho đến hết
+
+//*** Nhiều người xử lý cho một lời hứa (  Promises )
+//Khi bạn gọi phương thức then () nhiều lần trên một lời hứa, nó không phải là chuỗi hứa hẹn ( promises chaining ). Ví dụ:
+let p = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve(10);
+    }, 3 * 100);
+});
+p.then((result) => {
+    console.log(result); // 10
+    return result * 2;
+})
+p.then((result) => {
+    console.log(result); // 10
+    return result * 3;
+})
+p.then((result) => {
+    console.log(result); // 10
+    return result * 4;
+});
+/*
+Trong ví dụ này, bạn có nhiều trình xử lý cho một lời hứa. Những người xử lý này không có mối quan hệ
+Chúng thực thi độc lập và cũng không chuyển kết quả từ kết quả này sang kết quả khác như chuỗi lời hứa ở trên.
+Trong thực tế, bạn sẽ hiếm khi sử dụng nhiều trình xử lý cho một lời hứa.
+*/
