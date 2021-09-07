@@ -234,25 +234,504 @@ Vì phương thức then () trả về một Promise mới có giá trị đư�
 
 //*** Nhiều người xử lý cho một lời hứa (  Promises )
 //Khi bạn gọi phương thức then () nhiều lần trên một lời hứa, nó không phải là chuỗi hứa hẹn ( promises chaining ). Ví dụ:
-let p = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve(10);
-    }, 3 * 100);
-});
-p.then((result) => {
-    console.log(result); // 10
-    return result * 2;
-})
-p.then((result) => {
-    console.log(result); // 10
-    return result * 3;
-})
-p.then((result) => {
-    console.log(result); // 10
-    return result * 4;
-});
+// let p = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         resolve(10);
+//     }, 3 * 100);
+// });
+// p.then((result) => {
+//     console.log(result); // 10
+//     return result * 2;
+// })
+// p.then((result) => {
+//     console.log(result); // 10
+//     return result * 3;
+// })
+// p.then((result) => {
+//     console.log(result); // 10
+//     return result * 4;
+// });
 /*
 Trong ví dụ này, bạn có nhiều trình xử lý cho một lời hứa. Những người xử lý này không có mối quan hệ
 Chúng thực thi độc lập và cũng không chuyển kết quả từ kết quả này sang kết quả khác như chuỗi lời hứa ở trên.
 Trong thực tế, bạn sẽ hiếm khi sử dụng nhiều trình xử lý cho một lời hứa.
+*/
+
+//*** Trả về một promises
+// Khi bạn trả về một giá trị trong phương thức then (), phương thức then () trả về một promises mới ngay lập tức phân giải ( resolves ) thành giá trị trả về.
+// Ngoài ra, bạn có thể trả về một promises mới trong phương thức then (), như sau:
+// let p = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         resolve(10);
+//     }, 3 * 100);
+// });
+
+// p.then((result) => {
+//     console.log(result);
+//     return new Promise((resolve, reject) => {
+//         setTimeout(() => {
+//             resolve(result * 2);
+//         }, 3 * 1000);
+//     });
+// }).then((result) => {
+//     console.log(result);
+//     return new Promise((resolve, reject) => {
+//         setTimeout(() => {
+//             resolve(result * 3);
+//         }, 3 * 1000);
+//     });
+// }).then(result => console.log(result));
+// Ví dụ trên hiển thị 10, 20 và 60 sau mỗi 3 giây. Mẫu mã này cho phép bạn thực hiện một số tác vụ theo trình tự.
+// Chúng ta cấu trúc lại ví dụ trên như sau :
+// function generateNumber(num) {
+//     return new Promise((resolve, reject) => {
+//         setTimeout(() => {
+//             resolve(num);
+//         }, 3 * 1000);
+//     });
+// }
+// generateNumber(10)
+//     .then(result => {
+//         console.log(result);
+//         return generateNumber(result * 2);
+//     })
+//     .then((result) => {
+//         console.log(result);
+//         return generateNumber(result * 3);
+//     })
+//     .then(result => console.log(result));
+
+//*** Cú pháp chuỗi lời hứa ( Promise chaining syntax )
+/*
+Đôi khi, bạn có nhiều tác vụ không đồng bộ mà bạn muốn thực hiện theo trình tự
+Ngoài ra, bạn cần chuyển kết quả của bước trước cho bước tiếp theo
+Trong trường hợp này, bạn có thể sử dụng cú pháp sau:
+step1()
+    .then(result => step2(result))
+    .then(result => step3(result))
+    ...
+ Nếu bạn cần chuyển kết quả từ tác vụ trước sang tác vụ tiếp theo mà không chuyển kết quả, bạn sử dụng cú pháp này:
+step1()
+    .then(step2)
+    .then(step3)
+    ...
+    step1()
+    .then(step2)
+    .then(step3)
+    ...
+Giả sử rằng bạn muốn thực hiện các hoạt động không đồng bộ sau theo trình tự
+1- Lấy người dùng từ cơ sở dữ liệu.
+2- Nhận các dịch vụ của người dùng đã chọn
+3- Tính toán chi phí dịch vụ từ các dịch vụ của người dùng
+Các hàm sau minh họa ba hoạt động không đồng bộ:
+*/
+// function getUser(userId) {
+//     return new Promise((resolve, reject) => {
+//         console.log('Get the user from the database.');
+//         setTimeout(() => {
+//             resolve({
+//                 userId: userId,
+//                 username: 'admin'
+//             });
+//         }, 1000);
+//     })
+// }
+
+// function getServices(user) {
+//     return new Promise((resolve, reject) => {
+//         console.log(`Get the services of ${user.username} from the API.`);
+//         setTimeout(() => {
+//             resolve(['Email', 'VPN', 'CDN']);
+//         }, 3 * 1000);
+//     });
+// }
+
+// function getServiceCost(services) {
+//     return new Promise((resolve, reject) => {
+//         console.log(`Calculate the service cost of ${services}.`);
+//         setTimeout(() => {
+//             resolve(services.length * 100);
+//         }, 2 * 1000);
+//     });
+// }
+// Phần sau sử dụng các hứa hẹn để tuần tự hóa các chuỗi
+// getUser(100)
+//     .then(getServices)
+//     .then(getServiceCost)
+//     .then(console.log);
+// Lưu ý rằng ES2017 đã giới thiệu các từ khóa async / await giúp bạn viết mã rõ ràng hơn so với việc sử dụng kỹ thuật chuỗi hứa hẹn này ( promises chaning )
+// Trong hướng dẫn này, bạn đã học về chuỗi hứa thực thi nhiều tác vụ không đồng bộ theo trình tự.
+
+//@@@ Phương thức Promises.all() trong javascript
+/* 
+Trong hướng dẫn này, bạn sẽ học cách sử dụng phương thức tĩnh Promise.all () để tổng hợp kết quả từ nhiều hoạt động không đồng bộ
+Phương thức static Promise.all () chấp nhận một danh sách các Promise và trả về một Promise mà
+giải quyết ( resolves ) khi mọi Lời hứa ( Promises ) đầu vào đã được giải quyết ( resolves ) hoặc
+bị từ chối ( rejected ) khi bất kỳ Lời hứa ( Promises ) đầu vào nào bị từ chối ( rejectes )
+Sau đây là cú pháp của phương thức Promise.all ():
+Promise.all(iterable);
+Đối số có thể lặp là danh sách các hứa hẹn ( promises ) được truyền vào Promise.all () như một đối tượng có thể lặp lại.
+Nếu tất cả các lời hứa đầu vào được giải quyết, phương thức tĩnh Promise.all () trả về một Lời hứa mới phân giải thành một mảng các giá trị đã phân giải từ các lời hứa đầu vào, theo thứ tự trình lặp.
+Nếu một trong những lời hứa đầu vào bị từ chối, Promise.all () trả về một Lời hứa mới sẽ từ chối với lý do từ chối từ lời hứa bị từ chối đầu tiên
+Những lần từ chối tiếp theo sẽ không ảnh hưởng đến lý do từ chối. Promise trở lại cũng xử lý những lời từ chối một cách âm thầm.
+Promise.all () hữu ích khi bạn muốn tổng hợp các kết quả từ nhiều hoạt động không đồng bộ.
+*/
+// ví dụ minh họa cho nội dung trên, một số ví dụ để hiểu cách hoạt động của Promise.all ().
+// *** Promises giải quyết ( resolves promises )
+// const p1 = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         console.log('The first promise has resolved');
+
+//         resolve(10);
+//     }, 1 * 1000);
+
+// });
+// const p2 = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         console.log('The second promise has resolved');
+//         resolve(20);
+//     }, 2 * 1000);
+// });
+// const p3 = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         console.log('The third promise has resolved');
+//         resolve(30);
+//     }, 3 * 1000);
+// });
+// Để đợi cả ba lời hứa giải quyết, bạn sử dụng phương thức Promise.all ():
+// Promise.all([p1, p2, p3])
+//     .then(results => {
+//         const total = results.reduce((p, c) => p + c);
+
+//         console.log(`Results: ${results}`);
+//         console.log(`Total: ${total}`);
+//     });
+
+//*** Promises  từ chối ( rejected promises )
+// const p1 = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         console.log('The first promise has resolved');
+//         resolve(10);
+//     }, 1 * 1000);
+
+// });
+// const p2 = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         console.log('The second promise has rejected');
+//         reject('Failed');
+//     }, 2 * 1000);
+// });
+// const p3 = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         console.log('The third promise has resolved');
+//         resolve(30);
+//     }, 3 * 1000);
+// });
+
+// Promise.all([p1, p2, p3])
+//     .then(console.log) // never execute
+//     .catch(console.log);
+/*
+Trong ví dụ trên, chúng ta có ba lời hứa: lời hứa đầu tiên được giải quyết sau 1 giây, lời hứa thứ hai bị từ chối sau 2 giây và lời hứa thứ ba được giải quyết sau 3 giây.
+Kết quả là, lời hứa trở lại bị từ chối vì lời hứa thứ hai bị từ chối. Phương thức catch () được thực thi để hiển thị lý do cho lời hứa bị từ chối.
+Trong hướng dẫn này, bạn đã học cách sử dụng phương thức JavaScript Promise.all () để tổng hợp kết quả từ nhiều hoạt động không đồng bộ.
+*/
+
+//@@@ Phương thức Promises.race()
+/* 
+trong hướng dẫn này, bạn sẽ học cách sử dụng phương thức JavaScript Promise.race () static.
+Phương thức tĩnh Promise.race () chấp nhận một danh sách các promises và trả về một promises thực hiện hoặc từ chối ngay khi có một promises thực hiện hoặc từ chối, với giá trị hoặc lý do từ promises đó.
+Đây là cú pháp của phương thức Promise.race ():
+Promise.race(iterable)
+Trong cú pháp này, đối tượng có thể lặp lại là một đối tượng có thể lặp lại chứa danh sách các hứa hẹn
+Tên của Promise.race () ngụ ý rằng tất cả các lời hứa chạy đua với nhau với một người chiến thắng duy nhất, được giải quyết hoặc bị từ chối.
+*/
+/* 
+Sự khác nhau giữa Promise.race() và Promise.all()
+Một số ví dụ về việc sử dụng phương thức tĩnh Promise.race ().
+*/
+// Điều sau tạo ra hai lời hứa: một giải quyết trong 1 giây và một giải quyết trong 2 giây.
+// Bởi vì lời hứa đầu tiên giải quyết nhanh hơn lời hứa thứ hai, lời hứa trả về sẽ phân giải với giá trị từ lời hứa đầu tiên:
+// const p1 = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         console.log('The first promise has resolved');
+//         resolve(10);
+//     }, 1 * 1000);
+
+// });
+
+// const p2 = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         console.log('The second promise has resolved');
+//         resolve(20);
+//     }, 2 * 1000);
+// });
+// Promise.race([p1, p2])
+//     .then(value => console.log(`Resolved: ${value}`))
+//     .catch(reason => console.log(`Rejected: ${reason}`));
+
+// Ví dụ sau đây tạo ra hai lời hứa. Cái đầu tiên giải quyết trong 1 giây trong khi cái thứ hai từ chối trong 2 giây.
+// Bởi vì lời hứa đầu tiên nhanh hơn lời hứa thứ hai, lời hứa trả về phân giải thành giá trị từ lời hứa đầu tiên
+// const p1 = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         console.log('The first promise has resolved');
+//         resolve(10);
+//     }, 1 * 1000);
+
+// });
+
+// const p2 = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         console.log('The second promise has rejected');
+//         reject(20);
+//     }, 2 * 1000);
+// });
+
+// Promise.race([p1, p2])
+//     .then(value => console.log(`Resolved: ${value}`))
+//     .catch(reason => console.log(`Rejected: ${reason}`));
+
+// Lưu ý rằng nếu lời hứa thứ hai nhanh hơn lời hứa đầu tiên, thì lời hứa quay lại sẽ bị từ chối với lý do của lời hứa thứ hai
+// Trong ví dụ này cho chúng ta thấy phương thức promises.race() ưu tiên cho phương thức nào có thời gian thực hiện ngắn trước và dài sau
+const p1 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        console.log('The first promise has resolved');
+        resolve(10);
+    }, 2 * 1000);
+
+});
+
+const p2 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        console.log('The second promise has rejected');
+        reject(20);
+    }, 1 * 1000);
+});
+
+Promise.race([p1, p2])
+    .then(value => console.log(`Resolved: ${value}`))
+    .catch(reason => console.log(`Rejected: ${reason}`));
+
+//*** Ứng dụng thực tế phương thức promises.race()
+/*
+Giả sử rằng bạn phải hiển thị chỉ báo tải nếu quá trình tải dữ liệu từ máy chủ diễn ra lâu hơn một số giây.
+Để đạt được điều này, bạn có thể sử dụng phương thức tĩnh Promise.race (). Nếu thời gian chờ xảy ra, bạn sẽ hiển thị chỉ báo tải, nếu không, bạn sẽ hiển thị thông báo.
+Sau đây minh họa mã HTML:
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>JavaScript Promise.race() Demo</title>
+    <link href="css/promise-race.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="container">
+        <button id="btnGet">Get Message</button>
+        <div id="message"></div>
+        <div id="loader"></div>
+    </div>
+    <script src="js/promise-race.js"></script>
+</body>
+</html>
+Để tạo chỉ báo tải, chúng tôi sử dụng tính năng hoạt ảnh CSS
+Xem promises-race.css để biết thêm thông tin
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+}
+#container {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    margin: 10px auto;
+    padding: 16px;
+    width: 300px;
+    text-align: center;
+}
+#message {
+    margin-bottom: 10px;
+    padding: 10px 5px 10px;
+    text-align: left;
+}
+button {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 3%;
+    background: #007bff;
+    border-bottom: 2px solid #007bff;
+    border-top-style: none;
+    border-right-style: none;
+    border-left-style: none;
+    color: #fff;
+}
+button:hover {
+    background: #0069d9;
+    cursor: pointer;
+}
+.loader {
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #F9DC5C;
+    width: 25px;
+    height: 25px;
+    margin: 0 auto;
+    text-align: center;
+    -webkit-animation: spin 2s linear infinite;
+    // Safari 
+    animation: spin 2s linear infinite;
+}
+//Safari 
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+Về mặt kỹ thuật, nếu một phần tử có lớp .loader, nó sẽ hiển thị chỉ báo tải.
+*/
+
+/*
+Đầu tiên, xác định một chức năng mới tải dữ liệu. Nó sử dụng setTimeout () để mô phỏng một hoạt động không đồng bộ:
+const DATA_LOAD_TIME = 5000;
+
+function getData() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            const message = 'Promise.race() Demo';
+            resolve(message);
+        }, DATA_LOAD_TIME);
+    });
+}
+
+Thứ hai, phát triển một chức năng hiển thị một số nội dung:
+function showContent(message) {
+    document.querySelector('#message').textContent = message;
+}
+Chức năng này cũng có thể được sử dụng để đặt tin nhắn thành trống.
+
+Thứ ba, định nghĩa hàm timeout () trả về một lời hứa sẽ từ chối khi TIMEOUT được truyền.
+const TIMEOUT = 500;
+
+function timeout() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => reject(), TIMEOUT);
+    });
+}
+
+Thứ tư, phát triển một số chức năng hiển thị và ẩn chỉ báo tải:
+function showLoadingIndicator() {
+    document.querySelector('#loader').className = 'loader';
+}
+
+function hideLoadingIndicator() {
+    document.querySelector('#loader').className = '';
+}
+
+Thứ năm, đính kèm trình nghe sự kiện nhấp chuột vào nút Nhận tin nhắn. Bên trong trình xử lý nhấp chuột, sử dụng phương thức tĩnh Promise.race ():
+// handle button click event
+const btn = document.querySelector('#btnGet');
+
+btn.addEventListener('click', () => {
+    // reset UI if users click the 2nd, 3rd, ... time
+    reset();
+    
+    // show content or loading indicator
+    Promise.race([getData()
+            .then(showContent)
+            .then(hideLoadingIndicator), timeout()
+        ])
+        .catch(showLoadingIndicator);
+});
+
+Chúng tôi chuyển hai lời hứa cho phương thức Promise.race ():
+Promise.race([getData()
+            .then(showContent)
+            .then(hideLoadingIndicator), timeout()
+        ])
+        .catch(showLoadingIndicator);
+
+Lời hứa đầu tiên lấy dữ liệu từ máy chủ, hiển thị nội dung và ẩn chỉ báo tải. Lời hứa thứ hai thiết lập thời gian chờ.
+Nếu lời hứa đầu tiên mất hơn 500 ms để giải quyết, hàm catch () được gọi để hiển thị chỉ báo tải. Khi lời hứa đầu tiên được giải quyết, nó sẽ ẩn chỉ báo tải.
+Cuối cùng, phát triển một hàm reset () để ẩn thông báo và chỉ báo tải nếu nút được nhấp từ lần thứ hai.
+// reset UI
+function reset() {
+    hideLoadingIndicator();
+    showContent('');
+}
+
+Đặt nó tất cả cùng nhau.
+// after 0.5 seconds, if the getData() has not resolved, then show 
+// the Loading indicator
+const TIMEOUT = 500;
+const DATA_LOAD_TIME = 5000;
+
+function getData() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            const message = 'Promise.race() Demo';
+            resolve(message);
+        }, DATA_LOAD_TIME);
+    });
+}
+
+function showContent(message) {
+    document.querySelector('#message').textContent = message;
+}
+
+function timeout() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => reject(), TIMEOUT);
+    });
+}
+
+function showLoadingIndicator() {
+    document.querySelector('#loader').className = 'loader';
+}
+
+function hideLoadingIndicator() {
+    document.querySelector('#loader').className = '';
+}
+
+
+// handle button click event
+const btn = document.querySelector('#btnGet');
+
+btn.addEventListener('click', () => {
+    // reset UI if users click the second time
+    reset();
+
+    // show content or loading indicator
+    Promise.race([getData()
+            .then(showContent)
+            .then(hideLoadingIndicator), timeout()
+        ])
+        .catch(showLoadingIndicator);
+});
+
+// reset UI
+function reset() {
+    hideLoadingIndicator();
+    showContent('');
+}
+Trong hướng dẫn này, bạn đã học cách sử dụng phương thức JavaScript Promise.race () static.
 */
