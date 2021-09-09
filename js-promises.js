@@ -493,24 +493,24 @@ Một số ví dụ về việc sử dụng phương thức tĩnh Promise.race (
 
 // Lưu ý rằng nếu lời hứa thứ hai nhanh hơn lời hứa đầu tiên, thì lời hứa quay lại sẽ bị từ chối với lý do của lời hứa thứ hai
 // Trong ví dụ này cho chúng ta thấy phương thức promises.race() ưu tiên cho phương thức nào có thời gian thực hiện ngắn trước và dài sau
-const p1 = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        console.log('The first promise has resolved');
-        resolve(10);
-    }, 2 * 1000);
+// const p1 = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         console.log('The first promise has resolved');
+//         resolve(10);
+//     }, 2 * 1000);
 
-});
+// });
 
-const p2 = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        console.log('The second promise has rejected');
-        reject(20);
-    }, 1 * 1000);
-});
+// const p2 = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//         console.log('The second promise has rejected');
+//         reject(20);
+//     }, 1 * 1000);
+// });
 
-Promise.race([p1, p2])
-    .then(value => console.log(`Resolved: ${value}`))
-    .catch(reason => console.log(`Rejected: ${reason}`));
+// Promise.race([p1, p2])
+//     .then(value => console.log(`Resolved: ${value}`))
+//     .catch(reason => console.log(`Rejected: ${reason}`));
 
 //*** Ứng dụng thực tế phương thức promises.race()
 /*
@@ -735,3 +735,131 @@ function reset() {
 }
 Trong hướng dẫn này, bạn đã học cách sử dụng phương thức JavaScript Promise.race () static.
 */
+
+//@@@ xử lý lỗi trong Promises
+// trong hướng dẫn này, bạn sẽ học cách đối phó với việc xử lý lỗi trong các Promises.
+// Giả sử rằng bạn có một hàm được gọi là getUserById () trả về một Promise:
+// function getUserById(id) {
+//     return new Promise((resolve, reject) => {
+//         resolve({
+//             id: id,
+//             username: 'admin'
+//         });
+//     });
+// }
+
+//*** Lỗi bình thường
+// Đầu tiên, hãy thay đổi hàm getUserById () để tạo ra một lỗi bên ngoài Promises :
+// function getUserById(id) {
+//     if (typeof id !== 'number' || id <= 0) {
+//         throw new Error('Invalid id argument');
+//     }
+
+//     return new Promise((resolve, reject) => {
+//         resolve({
+//             id: id,
+//             username: 'admin'
+//         });
+//     });
+// }
+// Thứ hai, xử lý lời hứa bằng cách sử dụng cả hai phương thức then () và catch ():
+// getUserById('a')
+//     .then(user => console.log(user.username))
+//     .catch(err => console.log(err));
+// Khi bạn nêu ra một ngoại lệ ngoài promises, bạn phải nắm bắt nó bằng try / catch.
+// try {
+//     getUserById('a')
+//         .then(user => console.log(user.username))
+//         .catch(err => console.log(`Caught by .catch ${error}`));
+// } catch (error) {
+//     console.log(`Caught by try/catch ${error}`);
+// }
+
+//*** Lỗi bên trong một Promises
+// Chúng tôi thay đổi hàm getUserById () để tạo ra một lỗi bên trong promises:
+// let authorized = false;
+
+// function getUserById(id) {
+//     return new Promise((resolve, reject) => {
+//         if (!authorized) {
+//             throw new Error('Unauthorized access to the user data');
+//         }
+
+//         resolve({
+//             id: id,
+//             username: 'admin'
+//         });
+//     });
+// }
+// Và thực hiện lời hứa
+// try {
+//     getUserById(10)
+//         .then(user => console.log(user.username))
+//         .catch(err => console.log(`Caught by .catch ${err}`));
+// } catch (error) {
+//     console.log(`Caught by try/catch ${error}`);
+// }
+// Nếu bạn gặp lỗi bên trong Promises, phương thức catch () sẽ bắt lỗi, không phải phương thức try / catch
+// Nếu bạn xâu chuỗi các promises, phương thức catch () sẽ bắt các lỗi xảy ra trong bất kỳ lời hứa nào. Ví dụ:
+// promise1
+//     .then(promise2)
+//     .then(promise3)
+//     .then(promise4)
+//     .catch(err => console.log(err));
+// Trong ví dụ này, nếu có bất kỳ lỗi nào trong promise1, promise2, promises3 hoặc promise4, phương thức catch () sẽ xử lý nó.
+
+//*** Gọi hàm reject()
+// Việc ném lỗi có tác dụng tương tự như gọi hàm từ chối () như được minh họa trong ví dụ sau
+// let authorized = false;
+
+// function getUserById(id) {
+//     return new Promise((resolve, reject) => {
+//         if (!authorized) {
+//             reject('Unauthorized access to the user data');
+//         }
+
+//         resolve({
+//             id: id,
+//             username: 'admin'
+//         });
+//     });
+// }
+
+// try {
+//     getUserById(10)
+//         .then(user => console.log(user.username))
+//         .catch(err => console.log(`Caught by .catch ${err}`));
+// } catch (error) {
+//     console.log(`Caught by try/catch ${error}`);
+// }
+// Trong ví dụ này, thay vì đưa ra một lỗi bên trong promises, chúng ta đã gọi hàm reject () một cách rõ ràng. Phương thức catch () cũng xử lý lỗi trong trường hợp này
+
+//*** Thiếu phương thức catch ()
+// Ví dụ sau không cung cấp phương thức catch () để xử lý lỗi bên trong promises. Nó sẽ gây ra lỗi thời gian chạy và chấm dứt chương trình:
+let authorized = false;
+
+function getUserById(id) {
+    return new Promise((resolve, reject) => {
+        if (!authorized) {
+            reject('Unauthorized access to the user data');
+        }
+        resolve({
+            id: id,
+            username: 'admin'
+        });
+    });
+}
+
+try {
+    getUserById(10)
+        .then(user => console.log(user.username));
+    // the following code will not execute
+    console.log('next');
+
+} catch (error) {
+    console.log(`Caught by try/catch ${error}`);
+}
+// Nếu lời hứa được giải quyết, bạn có thể bỏ qua phương thức catch (). Trong tương lai, một lỗi tiềm ẩn có thể khiến chương trình dừng đột ngột
+//*** Tổng kết :
+// Bên trong lời hứa, phương thức catch () sẽ bắt lỗi do câu lệnh throw và reject () gây ra.
+// Nếu lỗi xảy ra và bạn không có phương thức catch (), công cụ JavaScript sẽ gây ra lỗi thời gian chạy và dừng chương trình.
